@@ -45,11 +45,6 @@ function getUint8Memory0() {
 function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
-/**
-*/
-export function greet() {
-    wasm.greet();
-}
 
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
@@ -85,6 +80,11 @@ function getInt32Memory0() {
 
 function getArrayF64FromWasm0(ptr, len) {
     return getFloat64Memory0().subarray(ptr / 8, ptr / 8 + len);
+}
+/**
+*/
+export function greet() {
+    wasm.greet();
 }
 
 const cachedTextEncoder = new TextEncoder('utf-8');
@@ -192,11 +192,55 @@ export class Signal {
         return Signal.__wrap(ret);
     }
     /**
+    * @param {number} pert
+    * @returns {Signal}
+    */
+    with_pert(pert) {
+        const ptr = this.__destroy_into_raw();
+        const ret = wasm.signal_with_pert(ptr, pert);
+        return Signal.__wrap(ret);
+    }
+    /**
+    * @param {boolean} coh
+    * @returns {Signal}
+    */
+    with_coh(coh) {
+        const ptr = this.__destroy_into_raw();
+        const ret = wasm.signal_with_coh(ptr, coh);
+        return Signal.__wrap(ret);
+    }
+    /**
+    * @param {boolean} coh
+    */
+    set_coh(coh) {
+        wasm.signal_set_coh(this.ptr, coh);
+    }
+    /**
+    * @param {number} pert
+    */
+    set_pert(pert) {
+        wasm.signal_set_pert(this.ptr, pert);
+    }
+    /**
     * @param {number} amp
     * @param {number} doa
     */
     add_source(amp, doa) {
         wasm.signal_add_source(this.ptr, amp, doa);
+    }
+    /**
+    * @returns {number}
+    */
+    n_sensor() {
+        const ret = wasm.signal_n_sensor(this.ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @returns {number}
+    */
+    n_sources() {
+        const ret = wasm.signal_n_sources(this.ptr);
+        return ret >>> 0;
     }
     /**
     * @returns {Signal}
@@ -214,6 +258,23 @@ export class Signal {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.signal_beamform(retptr, this.ptr, L);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v0 = getArrayF64FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 8);
+            return v0;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {number} L
+    * @returns {Float64Array}
+    */
+    capon(L) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.signal_capon(retptr, this.ptr, L);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var v0 = getArrayF64FromWasm0(r0, r1).slice();
@@ -254,6 +315,13 @@ export class ULA {
     static new(n_sensor, d) {
         const ret = wasm.ula_new(n_sensor, d);
         return ULA.__wrap(ret);
+    }
+    /**
+    * @returns {number}
+    */
+    n_sensor() {
+        const ret = wasm.ula_n_sensor(this.ptr);
+        return ret >>> 0;
     }
 }
 
